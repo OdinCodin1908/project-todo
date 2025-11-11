@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>project-todo</title>
-    <link rel="stylesheet" href="./style.css">
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Todo List</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f4f6f9; padding: 2rem; }
+    .container { max-width: 500px; margin: auto; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    h1 { text-align: center; margin-bottom: 1rem; color: #2d3748; }
+    input[type="text"] { width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; }
+    button { background: #4299e1; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    button:hover { background: #3182ce; }
+    ul { list-style: none; margin-top: 1rem; }
+    li { padding: 0.75rem; background: #edf2f7; margin-bottom: 0.5rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .delete { background: #e53e3e; padding: 0.25rem 0.5rem; font-size: 0.8rem; }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -24,10 +25,26 @@
     <button onclick="addTask()">Add Task</button>
     <ul id="taskList"></ul>
   </div>
-</body>
-</html>
-    <script  src="./script.js"></script>
 
-  </body>
-  
+  <script>
+    const input = document.getElementById('taskInput');
+    const list = document.getElementById('taskList');
+
+    function addTask() {
+      if (input.value.trim() === '') return;
+      
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${input.value}
+        <span class="delete" onclick="this.parentElement.remove()">✕</span>
+      `;
+      list.appendChild(li);
+      input.value = '';
+    }
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addTask();
+    });
+  </script>
+</body>
 </html>
