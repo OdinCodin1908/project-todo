@@ -3,26 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Todo List</title>
+  <title>Glass Todo List</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f4f6f9; padding: 2rem; }
-    .container { max-width: 500px; margin: auto; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-    h1 { text-align: center; margin-bottom: 1rem; color: #2d3748; }
-    input[type="text"] { width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem; }
-    button { background: #4299e1; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
-    button:hover { background: #3182ce; }
+    
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: linear-gradient(to bottom, #a8e6cf, #4caf50); 
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container { 
+      max-width: 500px; 
+      width: 100%;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px; 
+      padding: 2rem; 
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    h1 { 
+      text-align: center; 
+      margin-bottom: 1.5rem; 
+      color: #1a4731; 
+      font-size: 1.9rem; 
+    }
+
+    /* INPUT + BUTTON ON ONE LINE */
+    .input-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"] { 
+      flex: 1;
+      padding: 0.9rem; 
+      font-size: 1rem; 
+      border: 2px solid rgba(255,255,255,0.4); 
+      background: rgba(255,255,255,0.3);
+      border-radius: 12px; 
+      color: #1a4731;
+      transition: all 0.3s;
+    }
+    input:focus { 
+      border-color: #4caf50; 
+      background: rgba(255,255,255,0.5);
+      outline: none; 
+    }
+
+    button.add-btn { 
+      background: #4caf50; 
+      color: white; 
+      border: none; 
+      padding: 0 1.5rem; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-weight: 600; 
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+    button.add-btn:hover { 
+      background: #388e3c; 
+    }
+
     ul { list-style: none; margin-top: 1rem; }
-    li { padding: 0.75rem; background: #edf2f7; margin-bottom: 0.5rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .delete { background: #e53e3e; padding: 0.25rem 0.5rem; font-size: 0.8rem; }
+    li { 
+      padding: 1rem; 
+      background: rgba(255, 255, 255, 0.4); 
+      margin-bottom: 0.75rem; 
+      border-radius: 12px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      backdrop-filter: blur(5px);
+      transition: 0.2s;
+      color: #1a4731;
+      font-weight: 500;
+    }
+    li:hover { background: rgba(255, 255, 255, 0.6); }
+
+    .delete { 
+      background: #e53e3e; 
+      color: white;
+      padding: 0.4rem 0.7rem; 
+      font-size: 0.8rem; 
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .delete:hover { background: #c62828; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>My Todo List</h1>
-    <input type="text" id="taskInput" placeholder="Add a new task..." />
-    <button onclick="addTask()">Add Task</button>
+    <h1>Task Journal</h1>
+
+    <!-- INPUT + BUTTON ON ONE LINE -->
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Add a new task..." />
+      <button class="add-btn" onclick="addTask()">Add</button>
+    </div>
+
     <ul id="taskList"></ul>
   </div>
 
@@ -32,19 +121,35 @@
 
     function addTask() {
       if (input.value.trim() === '') return;
-      
+     
       const li = document.createElement('li');
       li.innerHTML = `
         ${input.value}
-        <span class="delete" onclick="this.parentElement.remove()">✕</span>
+        <span class="delete" onclick="this.parentElement.remove(); saveTasks()">X</span>
       `;
       list.appendChild(li);
       input.value = '';
+      saveTasks();
     }
 
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') addTask();
     });
+
+    function saveTasks() {
+      const tasks = Array.from(list.children).map(li => li.firstChild.textContent.trim());
+      localStorage.setItem('todos', JSON.stringify(tasks));
+    }
+
+    (function loadTasks() {
+      const saved = localStorage.getItem('todos');
+      if (saved) {
+        JSON.parse(saved).forEach(task => {
+          input.value = task;
+          addTask();
+        });
+      }
+    })();
   </script>
 </body>
 </html>
